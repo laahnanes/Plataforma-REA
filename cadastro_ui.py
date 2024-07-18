@@ -84,6 +84,32 @@ class Ui_Cadastro(object):
         font2.setFamily(u"Biko")
         font2.setPointSize(12)
         self.cb_perfil.setFont(font2)
+        self.matricula = QLabel(Cadastro)
+        self.matricula.setObjectName(u"matricula")
+        self.matricula.setGeometry(QRect(300, 450, 140, 41))
+        self.matricula.setFont(font1)
+        self.anoentrada = QLabel(Cadastro)
+        self.anoentrada.setObjectName(u"anoentrada")
+        self.anoentrada.setGeometry(QRect(300, 520, 210, 41))
+        self.anoentrada.setFont(font1)
+        self.txt_matricula = QLineEdit(Cadastro)
+        self.txt_matricula.setObjectName(u"txt_matricula")
+        self.txt_matricula.setGeometry(QRect(440, 450, 400, 31))
+        self.txt_anoentrada = QLineEdit(Cadastro)
+        self.txt_anoentrada.setObjectName(u"txt_anoentrada")
+        self.txt_anoentrada.setGeometry(QRect(515, 520, 400, 31))
+        self.especialidade = QLabel(Cadastro)
+        self.especialidade.setObjectName(u"especialidade")
+        self.especialidade.setGeometry(QRect(300, 450, 190, 41))
+        self.especialidade.setFont(font1)
+        self.txt_especialidade = QLineEdit(Cadastro)
+        self.txt_especialidade.setObjectName(u"txt_especialidade")
+        self.txt_especialidade.setGeometry(QRect(490, 450, 400, 31))
+        
+        # Tirando a visibilidade de especialidade no começo
+        self.especialidade.setVisible(False)
+        self.txt_especialidade.setVisible(False)
+
         self.btn_efetuarcadastro = QPushButton(Cadastro)
         self.btn_efetuarcadastro.setObjectName(u"btn_efetuarcadastro")
         self.btn_efetuarcadastro.setGeometry(QRect(670, 620, 201, 51))
@@ -131,11 +157,41 @@ class Ui_Cadastro(object):
         self.txt_email.raise_()
         self.txt_senha.raise_()
         self.cb_perfil.raise_()
+        self.matricula.raise_()
+        self.anoentrada.raise_()
+        self.txt_matricula.raise_()
+        self.txt_anoentrada.raise_()
+        self.especialidade.raise_()
+        self.txt_especialidade.raise_()
         self.btn_efetuarcadastro.raise_()
 
         self.retranslateUi(Cadastro)
 
         QMetaObject.connectSlotsByName(Cadastro)
+
+    # Conectar o sinal currentIndexChanged ao slot
+        self.cb_perfil.currentIndexChanged.connect(self.atualizarVisibilidade)
+
+    def atualizarVisibilidade(self, index):
+        if index == 0:  # Aluno selecionado
+            self.matricula.setVisible(True)
+            self.txt_matricula.setVisible(True)
+            self.anoentrada.setVisible(True)
+            self.txt_anoentrada.setVisible(True)
+
+            # Esconder campos de professor
+            self.especialidade.setVisible(False)
+            self.txt_especialidade.setVisible(False)
+
+        elif index == 1:  # Professor selecionado
+            self.matricula.setVisible(False)
+            self.txt_matricula.setVisible(False)
+            self.anoentrada.setVisible(False)
+            self.txt_anoentrada.setVisible(False)
+
+            # Mostrar campos de professor
+            self.especialidade.setVisible(True)
+            self.txt_especialidade.setVisible(True)
     # setupUi
 
     def retranslateUi(self, Cadastro):
@@ -150,6 +206,9 @@ class Ui_Cadastro(object):
         self.perfil.setText(QCoreApplication.translate("Cadastro", u"Perfil:", None))
         self.cb_perfil.setItemText(0, QCoreApplication.translate("Cadastro", u"Aluno", None))
         self.cb_perfil.setItemText(1, QCoreApplication.translate("Cadastro", u"Professor", None))
+        self.matricula.setText(QCoreApplication.translate("Cadastro", u"Matrícula:", None))
+        self.anoentrada.setText(QCoreApplication.translate("Cadastro", u"Ano de entrada:", None))
+        self.especialidade.setText(QCoreApplication.translate("Cadastro", u"Especialidade:", None))
 
         self.btn_efetuarcadastro.setText(QCoreApplication.translate("Cadastro", u"Cadastre-se", None))
     # retranslateUi
