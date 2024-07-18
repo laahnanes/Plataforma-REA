@@ -1,3 +1,4 @@
-# plataforma_rea
+# Plataforma de Recursos Educacionais Abertos
+Trabalho desenvolvido para a disciplina de Banco de Dados.
 
-Bibliotecas: pyside2
+Bibliotecas utilizadas: PySide2;
