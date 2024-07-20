@@ -1,4 +1,4 @@
-from PySide2.QtWidgets import QApplication, QMainWindow, QWidget
+from PySide2.QtWidgets import QApplication, QMainWindow, QWidget, QMessageBox
 from PySide2.QtGui import QGuiApplication
 from login_ui import Ui_Form
 from main_iu import Ui_MainWindow
@@ -16,8 +16,9 @@ class Login(QWidget, Ui_Form):
         self.setWindowTitle("Login - Plataforma REA UPE")
         self.center()  # Centralizando a janela na tela
 
-        self.btn_login.clicked.connect(self.open_system)
+        self.btn_login.clicked.connect(self.checarUsuario)
         self.btn_cadastro.clicked.connect(self.open_cadastro)
+
 
     # Função para centralizar a janela
     def center(self):
@@ -28,19 +29,29 @@ class Login(QWidget, Ui_Form):
             (screen.height() - size.height()) // 2
         )
 
+
     # Redefinindo resizeEvent para centralizar após redimensionar
     def resizeEvent(self, event):
         self.center()
         super().resizeEvent(event)
 
 
-    def open_system(self, tipo_usuario):
-        if self.txt_senha.text() == "123":
-            self.w = MainWindow()
+    def checarUsuario(self):
+        self.nome = Database()
+        self.nome.conexao()
+        autenticar = self.nome.checarPerfilUsuario(self.txt_nome.text().upper(), self.txt_senha.text())
+
+        if autenticar.lower() == "aluno" or autenticar.lower() == "professor":
+            self.w = MainWindow(autenticar.lower())
             self.w.show()
             self.close()
-        else:
-            print("Senha inválida")
+        else: 
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setWindowTitle("Erro ao acessar")
+            msg.setText(f"Nome ou senha incorretos!")
+            msg.exec_()
+
 
     # Função para abrir a tela de cadastro
     def open_cadastro(self):
@@ -77,10 +88,13 @@ class Cadastro(QWidget, Ui_Cadastro):
 
 # Criando a classe MainWindow que instancia uma MainWindow e a tela principal main
 class MainWindow(QMainWindow, Ui_MainWindow):
-    def __init__(self):
+    def __init__(self, tipo_usuario):
         super(MainWindow, self).__init__()
         self.setupUi(self)
         self.setWindowTitle("Plataforna UPE REA")
+
+        if tipo_usuario.lower() == "aluno":
+            self.btn_publicar.setVisible(False)
 
         # Butões para as páginas do sistema
         self.btn_inicio.clicked.connect(lambda: self.pages.setCurrentWidget(self.pg_inicio))

@@ -164,7 +164,7 @@ class Ui_Form(object):
         self.faixa.setText("")
         self.saudacao.setText(QCoreApplication.translate("Form", u"Ol\u00e1!", None))
         self.informe.setText(QCoreApplication.translate("Form", u"Irforme seus dados para iniciar a sess\u00e3o:", None))
-        self.nome.setText(QCoreApplication.translate("Form", u"Primeiro Nome:", None))
+        self.nome.setText(QCoreApplication.translate("Form", u"Nome Completo:", None))
         self.senha.setText(QCoreApplication.translate("Form", u"Senha:", None))
         self.btn_login.setText(QCoreApplication.translate("Form", u"Login", None))
         self.informe_2.setText(QCoreApplication.translate("Form", u"N\u00e3o \u00e9 cadastrado?", None))
