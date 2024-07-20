@@ -1,8 +1,10 @@
 from PySide2.QtWidgets import QApplication, QMainWindow, QWidget
 from PySide2.QtGui import QGuiApplication
 from login_ui import Ui_Form
-from main_ui import Ui_MainWindow
+from main_iu import Ui_MainWindow
 from cadastro_ui import Ui_Cadastro
+from database import Database
+from datetime import datetime
 import sys
 
 
@@ -31,8 +33,8 @@ class Login(QWidget, Ui_Form):
         self.center()
         super().resizeEvent(event)
 
-    # Função para validar o login
-    def open_system(self):
+
+    def open_system(self, tipo_usuario):
         if self.txt_senha.text() == "123":
             self.w = MainWindow()
             self.w.show()
@@ -52,8 +54,26 @@ class Cadastro(QWidget, Ui_Cadastro):
     def __init__(self):
         super(Cadastro, self).__init__()
         self.setupUi(self)
-        self.setWindowTitle("Cadastro - Plataforma REA UPE")        
+        self.setWindowTitle("Cadastro - Plataforma REA UPE")   
 
+        self.btn_efetuarcadastro.clicked.connect(self.coletarDadosUsuario)
+
+    def coletarDadosUsuario(self):
+        nome = self.txt_nome.text()
+        email = self.txt_email.text()
+        senha = self.txt_senha.text()
+        tipo_usuario = self.cb_perfil.currentText()
+        data_registro = datetime.now().date()
+
+        db = Database()
+        db.conexao()
+        db.insertUsuarios(nome, email, senha, tipo_usuario, data_registro)
+        db.cortarConexao()
+
+        self.txt_nome.setText("")
+        self.txt_email.setText("")
+        self.txt_senha.setText("")
+        self.cb_perfil.setCurrentIndex(-1)
 
 # Criando a classe MainWindow que instancia uma MainWindow e a tela principal main
 class MainWindow(QMainWindow, Ui_MainWindow):
