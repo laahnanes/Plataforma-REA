@@ -1,6 +1,6 @@
-from PySide2.QtWidgets import QApplication, QMainWindow, QWidget, QMessageBox
-from PySide2.QtGui import QGuiApplication
-from PySide2.QtCore import QDate
+from PySide2.QtWidgets import QApplication, QMainWindow, QWidget, QMessageBox, QTableView
+from PySide2.QtGui import QGuiApplication, QStandardItem, QStandardItemModel
+from PySide2.QtCore import Qt, QDate
 from login_ui import Ui_Form
 from main_iu import Ui_MainWindow
 from cadastro_ui import Ui_Cadastro
@@ -127,6 +127,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.btn_publicar.clicked.connect(lambda: self.pages.setCurrentWidget(self.pg_publicar))
         self.btn_publicarRecurso.clicked.connect(self.coletaDadosRecursos)
 
+        self.exibirRecursos()
+
     def coletaDadosRecursos(self):
         titulo = self.txt_titulo.text()
         autor = self.txt_autor.text()
@@ -144,6 +146,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.date_publi.setDate(QDate.currentDate())
         self.cb_tipo.setCurrentIndex(-1)
         self.txt_arquivo.setText("")
+
+        self.exibirRecursos()
+
+    def exibirRecursos(self):
+        db = Database()
+        db.conexao()
+        data = db.fetchRecursos()
+        db.cortarConexao()
+
+        model = QStandardItemModel()
+        model.setColumnCount(2)  # Define o número de colunas do modelo
+
+        # Defina os nomes das colunas
+        model.setHeaderData(0, Qt.Horizontal, "Título do Recurso")
+        model.setHeaderData(1, Qt.Horizontal, "Arquivo do Recurso")
+
+        for row in data:
+            title = QStandardItem(row[0])
+            file = QStandardItem(row[1])
+            title.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)  # Tornar o item não editável
+            file.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)   # Tornar o item não editável
+            model.appendRow([title, file])
+
+        self.listView.setModel(model)
+        self.listView.setColumnWidth(0, 300) 
+        self.listView.setColumnWidth(1, 200)  
+        self.listView.horizontalHeader().setStretchLastSection(True)
 
 
 # Inicializando o Aplicação

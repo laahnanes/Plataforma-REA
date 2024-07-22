@@ -275,7 +275,11 @@ class Database():
             print(f"Erro no banco de dados ao excluir tabela: {e}")
         except Exception as e:
             print(f"Falha desconhecida ao excluir tabela: {e}")
-        
+
+    def fetchRecursos(self):
+            cursor = self.connection.cursor()
+            cursor.execute("SELECT titulo, arquivo FROM recursos")
+            return cursor.fetchall()    
 
 if __name__ == "__main__":
     db = Database()     
