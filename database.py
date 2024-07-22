@@ -222,7 +222,7 @@ class Database():
     def fetchRecursos(self):
             cursor = self.connection.cursor()
             cursor.execute("SELECT titulo, arquivo FROM recursos")
-            return cursor.fetchall()  
+            return cursor.fetchall()      
         
 if __name__ == "__main__":
     db = Database()     
@@ -233,4 +233,5 @@ if __name__ == "__main__":
     db.createTable_recursos()
     db.createTable_cursos()
     db.createTable_disciplinas()
+    db.deleteRecurso(2)
     db.cortarConexao()        
