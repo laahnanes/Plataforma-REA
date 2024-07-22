@@ -8,7 +8,6 @@ from database import Database
 from datetime import datetime
 import sys
 
-
 class Login(QWidget, Ui_Form):
     def __init__(self) -> None:
         super(Login, self).__init__()
@@ -160,7 +159,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Defina os nomes das colunas
         model.setHeaderData(0, Qt.Horizontal, "Título do Recurso")
-        model.setHeaderData(1, Qt.Horizontal, "Arquivo do Recurso")
+        model.setHeaderData(1, Qt.Horizontal, "Link do Recurso")
 
         for row in data:
             title = QStandardItem(row[0])

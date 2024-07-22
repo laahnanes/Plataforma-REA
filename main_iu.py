@@ -189,6 +189,6 @@ class Ui_MainWindow(object):
         self.cb_tipo.setItemText(2, QCoreApplication.translate("Cadastro", u"Execício", None))
         self.cb_tipo.setItemText(3, QCoreApplication.translate("Cadastro", u"Vídeo", None))
         self.datapubli.setText(QCoreApplication.translate("MainWindow", u"Data de publica\u00e7\u00e3o:", None))
-        self.arquivo.setText(QCoreApplication.translate("MainWindow", u"Arquivo:", None))
+        self.arquivo.setText(QCoreApplication.translate("MainWindow", u"Link:", None))
     # retranslateUi
 

@@ -11,10 +11,9 @@ class Database():
         return self.connection
 
     def cortarConexao(self):
-        try:
             self.connection.close()
-        except: 
-            print("Falha")
+
+            # Criação das tabelas
 
     def createTable_usuarios(self):
         try:
@@ -27,10 +26,10 @@ class Database():
                 senha VARCHAR(60) NOT NULL UNIQUE,
                 tipo_usuario TEXT NOT NULL CHECK(tipo_usuario IN ('Aluno', 'Professor')),
                 data_registro DATE NOT NULL
-                )""")
+                )""")     
             
-        except AttributeError:
-            print("Falha em criar tabela usuarios")
+        except sqlite3.DatabaseError as e:
+            print(f"Falha ao criar tabela usuarios: {e}")
 
     def createTable_professores(self):
         try:
@@ -44,8 +43,8 @@ class Database():
                 FOREIGN KEY (id_Disciplina) REFERENCES disciplinas(id_Disciplina)            
                 )""")
             
-        except AttributeError:
-            print("Falha em criar tabela professores")
+        except sqlite3.DatabaseError as e:
+            print(f"Falha ao criar tabela professores: {e}")
 
     def createTable_alunos(self):
         try:
@@ -57,12 +56,11 @@ class Database():
                 matricula VARCHAR(255),
                 ano_entrada INTEGER,
                 FOREIGN KEY (id_Curso) REFERENCES cursos(id_Curso),             
-                FOREIGN KEY (id_Usuario) REFERENCES usuarios(id_Usuario)
-                           
+                FOREIGN KEY (id_Usuario) REFERENCES usuarios(id_Usuario)        
                 )""")
             
-        except Exception as e:
-            print("Falha em criar tabela alunos:", e)
+        except sqlite3.DatabaseError as e:
+            print(f"Falha ao criar tabela alunos: {e}")
 
     def createTable_recursos(self):
         try:
@@ -75,17 +73,10 @@ class Database():
                     autor VARCHAR(255) NOT NULL,
                     publicacao DATE NOT NULL,
                     arquivo TEXT NOT NULL
-                )
-            """)
-            self.connection.commit()
-        except sqlite3.IntegrityError as e:
-            print(f"Erro de integridade ao criar tabela: {e}")
-        except sqlite3.OperationalError as e:
-            print(f"Erro operacional ao criar tabela: {e}")
+                )""")
+            
         except sqlite3.DatabaseError as e:
-            print(f"Erro no banco de dados ao criar tabela: {e}")
-        except Exception as e:
-            print(f"Falha desconhecida ao criar tabela: {e}")
+            print(f"Falha ao criar tabela recursos: {e}")
 
     def createTable_cursos(self):
         try:
@@ -96,8 +87,8 @@ class Database():
                 nome VARCHAR(255) NOT NULL           
                 )""")
             
-        except AttributeError:
-            print("Falha em criar tabela cursos")   
+        except sqlite3.DatabaseError as e:
+            print(f"Falha ao criar tabela cursos: {e}") 
 
     def createTable_disciplinas(self):
         try:
@@ -110,26 +101,10 @@ class Database():
                 FOREIGN KEY (id_Curso) REFERENCES cursos(id_Curso)           
                 )""")
             
-        except AttributeError:
-            print("Falha em criar tabela disciplinas")      
+        except sqlite3.DatabaseError as e:
+            print(f"Falha ao criar tabela disciplinas: {e}")  
 
-    def createTable_downloads(self):
-        try:
-            cursor = self.connection.cursor()
-            cursor.execute(""" CREATE TABLE IF NOT EXISTS downloads(
-                           
-                id_Download INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                id_Usuario INTEGER NOT NULL,
-                id_Recurso INTEGER NOT NULL,
-                data DATE NOT NULL,
-                status TEXT NOT NULL CHECK(status IN ('Concluído', 'Falha')),
-                FOREIGN KEY (id_Usuario) REFERENCES usuarios(id_Usuario),
-                FOREIGN KEY (id_Recurso) REFERENCES recursos(id_Recurso)                      
-                )""")
-            
-        except AttributeError:
-            print("Falha em criar tabela downloads")              
-
+    #   Métodos de inserção         
 
     def insertUsuarios(self, nome, email, senha, tipo_usuario, data_registro):
         try:
@@ -138,15 +113,11 @@ class Database():
  
                 INSERT INTO usuarios(nome, email, senha, tipo_usuario, data_registro) VALUES (?, ?, ?, ?, ?)
                 """, (nome, email, senha, tipo_usuario, data_registro))
+            
             self.connection.commit()
-        except sqlite3.IntegrityError as e:
-            print(f"Erro de integridade ao inserir aluno: {e}")
-        except sqlite3.OperationalError as e:
-            print(f"Erro operacional ao inserir aluno: {e}")
+
         except sqlite3.DatabaseError as e:
-            print(f"Erro no banco de dados ao inserir aluno: {e}")
-        except Exception as e:
-            print(f"Falha desconhecida ao inserir aluno: {e}")
+            print(f"Falha ao inserir usuarios: {e}")
 
     def insertProfessores(self, id_Usuario, especialidade, id_Disciplina):
         try:
@@ -155,16 +126,11 @@ class Database():
  
                 INSERT INTO professores(id_Usuario, especialidade, id_Disciplina) VALUES (?, ?, ?)
                 """, (id_Usuario, especialidade, id_Disciplina))
+            
             self.connection.commit()
-        except sqlite3.IntegrityError as e:
-            print(f"Erro de integridade ao inserir aluno: {e}")
-        except sqlite3.OperationalError as e:
-            print(f"Erro operacional ao inserir aluno: {e}")
-        except sqlite3.DatabaseError as e:
-            print(f"Erro no banco de dados ao inserir aluno: {e}")
-        except Exception as e:
-            print(f"Falha desconhecida ao inserir aluno: {e}")
 
+        except sqlite3.DatabaseError as e:
+            print(f"Falha ao inserir professores: {e}")
 
 
     def insertAlunos(self, id_Usuario, id_Curso, matricula, anoentrada):
@@ -173,15 +139,11 @@ class Database():
             cursor.execute("""
                 INSERT INTO alunos(id_Usuario, id_Curso, matricula, ano_entrada) VALUES (?, ?, ?, ?)
             """, (id_Usuario, id_Curso, matricula, anoentrada))
+
             self.connection.commit()
-        except sqlite3.IntegrityError as e:
-            print(f"Erro de integridade ao inserir aluno: {e}")
-        except sqlite3.OperationalError as e:
-            print(f"Erro operacional ao inserir aluno: {e}")
+
         except sqlite3.DatabaseError as e:
-            print(f"Erro no banco de dados ao inserir aluno: {e}")
-        except Exception as e:
-            print(f"Falha desconhecida ao inserir aluno: {e}")
+            print(f"Falha ao inserir alunos: {e}")
 
 
     def insertRecursos(self, titulo, tipo_recurso, autor, publicacao, arquivo):
@@ -191,15 +153,11 @@ class Database():
                 INSERT INTO recursos (titulo, tipo_recurso, autor, publicacao, arquivo)
                 VALUES (?, ?, ?, ?, ?)
             """, (titulo, tipo_recurso, autor, publicacao, arquivo))
+
             self.connection.commit()
-        except sqlite3.IntegrityError as e:
-            print(f"Erro de integridade ao inserir recurso: {e}")
-        except sqlite3.OperationalError as e:
-            print(f"Erro operacional ao inserir recurso: {e}")
+
         except sqlite3.DatabaseError as e:
-            print(f"Erro no banco de dados ao inserir recurso: {e}")
-        except Exception as e:
-            print(f"Falha desconhecida ao inserir recurso: {e}")
+            print(f"Falha ao inserir recursos: {e}")
 
 
     def insertCurso(self, id_Curso, nomecurso):
@@ -209,9 +167,11 @@ class Database():
  
                 INSERT INTO cursos(id_Curso, nome) VALUES (?, ?)
                 """, (id_Curso, nomecurso))
+            
             self.connection.commit()
-        except: 
-            print("Falha em inserir curso")
+
+        except sqlite3.DatabaseError as e:
+            print(f"Falha ao inserir cursos: {e}")
 
     def insertDisciplina(self, id_Curso, nomedisciplina):
         try:
@@ -220,9 +180,11 @@ class Database():
                 INSERT INTO disciplinas (id_Curso, nome)
                 VALUES (?, ?)
             """, (id_Curso, nomedisciplina))
+
             self.connection.commit()
-        except sqlite3.Error as e:
-            print(f"Falha em inserir disciplina: {e}")
+
+        except sqlite3.DatabaseError as e:
+            print(f"Falha ao inserir disciplina: {e}")
 
 
     def checarPerfilUsuario(self, nome, senha):
@@ -241,51 +203,34 @@ class Database():
                     return "Professor"
                 else:
                     continue
-            return "Usuário não cadastrado"
         except:
             print("Usuário não cadastrado")
 
     def deleteUsuario(self, id_Usuario):
         try:
             cursor = self.connection.cursor()
-
-            # Deletar registro na tabela alunos, se existir
             cursor.execute("DELETE FROM alunos WHERE id_Usuario = ?", (id_Usuario,))
-
-            # Deletar registro na tabela professores, se existir
             cursor.execute("DELETE FROM professores WHERE id_Usuario = ?", (id_Usuario,))
-
-            # Deletar registro na tabela usuarios
             cursor.execute("DELETE FROM usuarios WHERE id_Usuario = ?", (id_Usuario,))
             
             self.connection.commit()
-            print(f"Usuário com ID {id_Usuario} deletado com sucesso.")
+
         except Exception as e:
             print("Falha em deletar usuário:", e)
 
-    def dropTable_recursos(self):
-        try:
-            cursor = self.connection.cursor()
-            cursor.execute("DROP TABLE IF EXISTS recursos")
-            self.connection.commit()
-            print("Tabela 'recursos' excluída com sucesso.")
-        except sqlite3.OperationalError as e:
-            print(f"Erro operacional ao excluir tabela: {e}")
-        except sqlite3.DatabaseError as e:
-            print(f"Erro no banco de dados ao excluir tabela: {e}")
-        except Exception as e:
-            print(f"Falha desconhecida ao excluir tabela: {e}")
 
     def fetchRecursos(self):
             cursor = self.connection.cursor()
             cursor.execute("SELECT titulo, arquivo FROM recursos")
-            return cursor.fetchall()    
-
+            return cursor.fetchall()  
+        
 if __name__ == "__main__":
     db = Database()     
     db.conexao()
+    db.createTable_usuarios()
+    db.createTable_professores()
+    db.createTable_alunos()
     db.createTable_recursos()
-    
-    
-
+    db.createTable_cursos()
+    db.createTable_disciplinas()
     db.cortarConexao()        
